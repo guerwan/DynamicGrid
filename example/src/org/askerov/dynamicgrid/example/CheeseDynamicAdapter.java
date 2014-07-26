@@ -40,6 +40,7 @@ public class CheeseDynamicAdapter extends BaseDynamicGridAdapter {
         return convertView;
     }
 
+
     private class CheeseViewHolder {
         private TextView titleText;
         private ImageView image;

@@ -425,9 +425,29 @@ public class DynamicGridView extends GridView {
                             mHoverCellOriginalBounds.top + deltaY + mTotalOffsetY);
                     mHoverCell.setBounds(mHoverCellCurrentBounds);
                     invalidate();
-                    handleCellSwitch();
-                    mIsMobileScrolling = false;
-                    handleMobileCellScroll();
+                    if(mHoverCellCurrentBounds.bottom > getTop() + getPaddingTop())
+                    {
+                        handleCellSwitch();
+                        mIsMobileScrolling = false;
+                        handleMobileCellScroll();
+                    }
+                    else
+                    {
+                        if(mHoverCellCurrentBounds.centerX() > getMeasuredWidth() / 2)
+                        {
+                            //Hovering right button
+                            if (mDropListener != null) {
+                                mDropListener.onRightButtonHovering();
+                            }
+                        }
+                        else if(mHoverCellCurrentBounds.centerX() < getMeasuredWidth() / 2)
+                        {
+                            //Hovering left button
+                            if (mDropListener != null) {
+                                mDropListener.onLeftButtonHovering();
+                            }
+                        }
+                    }
                     return false;
                 }
 
@@ -443,8 +463,28 @@ public class DynamicGridView extends GridView {
                 }
 
                 if (mHoverCell != null) {
-                    if (mDropListener != null) {
-                        mDropListener.onActionDrop();
+                    if(mHoverCell.getBounds().bottom > getTop() + getPaddingTop())
+                    {
+                        if (mDropListener != null) {
+                            mDropListener.onActionDrop();
+                        }
+                    }
+                    else
+                    {
+                        if(mHoverCell.getBounds().centerX() > getMeasuredWidth() / 2)
+                        {
+                            //Hovering right button
+                            if (mDropListener != null) {
+                                mDropListener.onRightButtonDrop();
+                            }
+                        }
+                        else if(mHoverCell.getBounds().centerX() < getMeasuredWidth() / 2)
+                        {
+                            //Hovering left button
+                            if (mDropListener != null) {
+                                mDropListener.onLeftButtonDrop();
+                            }
+                        }
                     }
                 }
                 break;
@@ -828,6 +868,10 @@ public class DynamicGridView extends GridView {
 
     public interface OnDropListener {
         void onActionDrop();
+        void onRightButtonHovering();
+        void onLeftButtonHovering();
+        void onLeftButtonDrop();
+        void onRightButtonDrop();
     }
 
     public interface OnDragListener {

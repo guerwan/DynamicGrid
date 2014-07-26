@@ -26,7 +26,6 @@ dynamicgrid/.idea/workspace.xml
 dynamicgrid/.idea/
 dynamicgrid/project.properties
 
-dynamicgrid/project.properties
 
 *.properties
 
@@ -36,7 +35,6 @@ dynamicgrid/build.xml
 
 dynamicgrid/ant.properties
 
-dynamicgrid/.idea/
 
 dynamicgrid/.idea/codeStyleSettings.xml
 
@@ -47,3 +45,7 @@ example/build.xml
 example/proguard-project.txt
 
 example/modules/
+/.gradle/
+/.idea/
+/build/
+/gradle/
