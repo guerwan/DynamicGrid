@@ -52,6 +52,7 @@ public class DynamicGridView extends GridView {
     private List<Long> idList = new ArrayList<Long>();
 
     private long mMobileItemId = INVALID_ID;
+    private int mMobileItemPosition = INVALID_POSITION;
 
     private boolean mCellIsMobile = false;
     private int mActivePointerId = INVALID_ID;
@@ -425,7 +426,7 @@ public class DynamicGridView extends GridView {
                             mHoverCellOriginalBounds.top + deltaY + mTotalOffsetY);
                     mHoverCell.setBounds(mHoverCellCurrentBounds);
                     invalidate();
-                    if(mHoverCellCurrentBounds.bottom > getTop() + getPaddingTop())
+                    if(isHoveringButtons(mHoverCellCurrentBounds))
                     {
                         handleCellSwitch();
                         mIsMobileScrolling = false;
@@ -437,14 +438,14 @@ public class DynamicGridView extends GridView {
                         {
                             //Hovering right button
                             if (mDropListener != null) {
-                                mDropListener.onRightButtonHovering();
+                                mDropListener.onRightButtonHovering(mMobileItemPosition);
                             }
                         }
                         else if(mHoverCellCurrentBounds.centerX() < getMeasuredWidth() / 2)
                         {
                             //Hovering left button
                             if (mDropListener != null) {
-                                mDropListener.onLeftButtonHovering();
+                                mDropListener.onLeftButtonHovering(mMobileItemPosition);
                             }
                         }
                     }
@@ -453,6 +454,8 @@ public class DynamicGridView extends GridView {
 
                 break;
             case MotionEvent.ACTION_UP:
+                final Rect bounds = new Rect(mHoverCellCurrentBounds);
+
                 touchEventsEnded();
 
                 if (mUndoSupportEnabled) {
@@ -463,7 +466,7 @@ public class DynamicGridView extends GridView {
                 }
 
                 if (mHoverCell != null) {
-                    if(mHoverCell.getBounds().bottom > getTop() + getPaddingTop())
+                    if(isHoveringButtons(bounds))
                     {
                         if (mDropListener != null) {
                             mDropListener.onActionDrop();
@@ -471,18 +474,18 @@ public class DynamicGridView extends GridView {
                     }
                     else
                     {
-                        if(mHoverCell.getBounds().centerX() > getMeasuredWidth() / 2)
+                        if(bounds.centerX() > getMeasuredWidth() / 2)
                         {
                             //Hovering right button
                             if (mDropListener != null) {
-                                mDropListener.onRightButtonDrop();
+                                mDropListener.onRightButtonDrop(mMobileItemPosition);
                             }
                         }
-                        else if(mHoverCell.getBounds().centerX() < getMeasuredWidth() / 2)
+                        else if(bounds.centerX() < getMeasuredWidth() / 2)
                         {
                             //Hovering left button
                             if (mDropListener != null) {
-                                mDropListener.onLeftButtonDrop();
+                                mDropListener.onLeftButtonDrop(mMobileItemPosition);
                             }
                         }
                     }
@@ -516,6 +519,10 @@ public class DynamicGridView extends GridView {
         return super.onTouchEvent(event);
     }
 
+    private boolean isHoveringButtons(Rect bounds) {
+        return bounds.bottom - bounds.height() / 3 > (getTop() + getPaddingTop());
+    }
+
     private void startDragAtPosition(int position) {
         mTotalOffsetY = 0;
         mTotalOffsetX = 0;
@@ -523,6 +530,8 @@ public class DynamicGridView extends GridView {
         View selectedView = getChildAt(itemNum);
         if (selectedView != null) {
             mMobileItemId = getAdapter().getItemId(position);
+            mMobileItemPosition = position;
+
             if (mSelectedItemBitmapCreationListener != null)
                 mSelectedItemBitmapCreationListener.onPreSelectedItemBitmapCreation(selectedView, position, mMobileItemId);
             mHoverCell = getAndAddHoverView(selectedView);
@@ -868,10 +877,10 @@ public class DynamicGridView extends GridView {
 
     public interface OnDropListener {
         void onActionDrop();
-        void onRightButtonHovering();
-        void onLeftButtonHovering();
-        void onLeftButtonDrop();
-        void onRightButtonDrop();
+        void onRightButtonHovering(int itemPosition);
+        void onLeftButtonHovering(int itemPosition);
+        void onLeftButtonDrop(int itemPosition);
+        void onRightButtonDrop(int itemPosition);
     }
 
     public interface OnDragListener {

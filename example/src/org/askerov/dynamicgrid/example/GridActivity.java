@@ -79,29 +79,30 @@ public class GridActivity extends Activity {
             }
 
             @Override
-            public void onRightButtonHovering() {
+            public void onRightButtonHovering(int itemPosition) {
                 mDeleteBtn.setPressed(true);
                 mEditBtn.setPressed(false);
             }
 
             @Override
-            public void onLeftButtonHovering() {
+            public void onLeftButtonHovering(int itemPosition) {
                 mDeleteBtn.setPressed(false);
                 mEditBtn.setPressed(true);
             }
 
             @Override
-            public void onLeftButtonDrop() {
+            public void onLeftButtonDrop(int itemPosition) {
                 mDeleteBtn.setPressed(false);
                 mEditBtn.setPressed(false);
                 Toast.makeText(GridActivity.this, "Edit", Toast.LENGTH_LONG).show();
             }
 
             @Override
-            public void onRightButtonDrop() {
+            public void onRightButtonDrop(int itemPosition) {
                 mDeleteBtn.setPressed(false);
                 mEditBtn.setPressed(false);
                 Toast.makeText(GridActivity.this, "Delete", Toast.LENGTH_LONG).show();
+                mAdapter.remove(mAdapter.getItem(itemPosition));
             }
         });
     }
