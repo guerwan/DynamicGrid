@@ -312,6 +312,11 @@ public class DynamicGridView extends GridView {
         if (mDragListener != null)
             mDragListener.onDragPositionsChanged(originalPosition, targetPosition);
         getAdapterInterface().reorderItems(originalPosition, targetPosition);
+
+        if(mMobileItemPosition == originalPosition)
+        {
+            mMobileItemPosition = targetPosition;
+        }
     }
 
     private int getColumnCount() {
